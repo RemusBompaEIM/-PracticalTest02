@@ -80,7 +80,7 @@ public class PracticalTest02MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             String clientAddress = clientAddressEditText.getText().toString();
-            String clientPort = clientPortEditText.getText().toString();
+            String clientPort = portClient.getText().toString();
             if (clientAddress == null || clientAddress.isEmpty()
                     || clientPort == null || clientPort.isEmpty()) {
                 Toast.makeText(getApplicationContext(), "[MAIN ACTIVITY] Client connection parameters should be filled!", Toast.LENGTH_SHORT).show();
@@ -111,7 +111,7 @@ public class PracticalTest02MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             String clientAddress = clientAddressEditText.getText().toString();
-            String clientPort = clientPortEditText.getText().toString();
+            String clientPort = portClient.getText().toString();
             if (clientAddress == null || clientAddress.isEmpty()
                     || clientPort == null || clientPort.isEmpty()) {
                 Toast.makeText(getApplicationContext(), "[MAIN ACTIVITY] Client connection parameters should be filled!", Toast.LENGTH_SHORT).show();
@@ -137,7 +137,7 @@ public class PracticalTest02MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             String clientAddress = clientAddressEditText.getText().toString();
-            String clientPort = clientPortEditText.getText().toString();
+            String clientPort = portClient.getText().toString();
             if (clientAddress == null || clientAddress.isEmpty()
                     || clientPort == null || clientPort.isEmpty()) {
                 Toast.makeText(getApplicationContext(), "[MAIN ACTIVITY] Client connection parameters should be filled!", Toast.LENGTH_SHORT).show();

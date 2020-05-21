@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 import ro.pub.cs.systems.eim.practicaltest02.general.Constants;
 import ro.pub.cs.systems.eim.practicaltest02.general.Utilities;
-import ro.pub.cs.systems.eim.practicaltest02.model.BitCoinInformation;
+import ro.pub.cs.systems.eim.practicaltest02.model.Alarm;
 
 public class CommunicationThread extends Thread {
     private ServerThread serverThread;
@@ -40,21 +40,45 @@ public class CommunicationThread extends Thread {
                 Log.e(Constants.TAG, "[COMMUNICATION THREAD] Error receiving parameters from client (request)!");
                 return;
             }
-            HashMap<String, String> data = serverThread.getData();
+
+            HashMap<String, Alarm> data = serverThread.getData();
             String ip = socket.getInetAddress().toString();
-            if (data.containsKey(ip)) {
-                Log.i(Constants.TAG, "[COMMUNICATION THREAD] Ovverwrite alarm...");
+
+            Log.i(Constants.TAG, "[COMMUNICATION THREAD] Received " + request);
+            if(request.substring(0,3).equals("set")){
+                if (data.containsKey(ip)) {
+                    Log.i(Constants.TAG, "[COMMUNICATION THREAD] Ovverwrite alarm...");
+                }
+                String[] vals = request.split(",");
+                data.put(ip, new Alarm(vals[1], vals[2]));
+                Log.i(Constants.TAG, "[COMMUNICATION THREAD] Put alarm " + vals[1] + "," + vals[2] + " for " + ip);
+                printWriter.println("Alarm set");
+                printWriter.flush();
+            }else if(request.equals("reset")){
+                if (data.containsKey(ip)) {
+                    Log.i(Constants.TAG, "[COMMUNICATION THREAD] Delete alarm...");
+                    data.remove(ip);
+                    printWriter.println("Alarm deleted");
+                    printWriter.flush();
+                }else{
+                    printWriter.println("No alarm for this ip");
+                    printWriter.flush();
+                }
+            }else if(request.equals("poll")){
+                if (data.containsKey(ip)) {
+                    Log.i(Constants.TAG, "[COMMUNICATION THREAD] Verify if alarm is active...");
+                    Socket new_socket = new Socket(Constants.WEB_SERVICE_ADDRESS, Constants.WEB_SERVICE_PORT);
+                    BufferedReader new_bufferedReader = Utilities.getReader(new_socket);
+                    String dayTimeProtocol = new_bufferedReader.readLine();
+                    Log.d(Constants.TAG, "[COMMUNICATION THREAD] The server returned: " + dayTimeProtocol);
+
+                }else{
+                    printWriter.println("No alarm for this ip");
+                    printWriter.flush();
+                }
             }
 
-            Socket new_socket = new Socket(Constants.WEB_SERVICE_ADDRESS, Constants.WEB_SERVICE_PORT);
-            BufferedReader new_bufferedReader = Utilities.getReader(new_socket);
-            PrintWriter new_printWriter = Utilities.getWriter(new_socket);
-            new_printWriter.println(request);
-            new_printWriter.flush();
-            String result = new_bufferedReader.readLine();
 
-            printWriter.println(result);
-            printWriter.flush();
         } catch (IOException ioException) {
             Log.e(Constants.TAG, "[COMMUNICATION THREAD] An exception has occurred: " + ioException.getMessage());
             if (Constants.DEBUG) {

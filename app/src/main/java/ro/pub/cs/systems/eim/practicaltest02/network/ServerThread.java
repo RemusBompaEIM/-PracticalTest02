@@ -9,12 +9,13 @@ import java.util.HashMap;
 
 import cz.msebera.android.httpclient.client.ClientProtocolException;
 import ro.pub.cs.systems.eim.practicaltest02.general.Constants;
+import ro.pub.cs.systems.eim.practicaltest02.model.Alarm;
 
 public class ServerThread extends Thread{
     private int port = 0;
     private ServerSocket serverSocket = null;
 
-    private HashMap<String, String> data = null;
+    private HashMap<String, Alarm> data = null;
 
     public ServerThread(int port) {
         this.port = port;
@@ -45,11 +46,11 @@ public class ServerThread extends Thread{
         return serverSocket;
     }
 
-    public synchronized void setData(String currency, String state) {
-        this.data.put(currency, state);
+    public synchronized void setData(String currency, Alarm alarm) {
+        this.data.put(currency, alarm);
     }
 
-    public synchronized HashMap<String, String> getData() {
+    public synchronized HashMap<String, Alarm> getData() {
         return data;
     }
 
