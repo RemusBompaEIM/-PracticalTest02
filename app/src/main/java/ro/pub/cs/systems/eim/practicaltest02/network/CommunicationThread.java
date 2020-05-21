@@ -78,18 +78,18 @@ public class CommunicationThread extends Thread {
                     Alarm my_alarm = data.get(ip);
                     Log.d(Constants.TAG, "[COMMUNICATION THREAD] The server returned: " + dayTimeProtocol);
                     if(Integer.parseInt(my_alarm.getHour()) < Integer.parseInt(hours)){
-                        printWriter.println("Inactive");
+                        printWriter.println("Active");
                         printWriter.flush();
                     }else if(Integer.parseInt(my_alarm.getHour()) == Integer.parseInt(hours)){
                         if(Integer.parseInt(my_alarm.getMinute()) <= Integer.parseInt(minutes)){
-                            printWriter.println("Inactive");
+                            printWriter.println("Active");
                             printWriter.flush();
                         }else{
-                            printWriter.println("Active");
+                            printWriter.println("Inactive");
                             printWriter.flush();
                         }
                     }else{
-                        printWriter.println("Active");
+                        printWriter.println("Inactive");
                         printWriter.flush();
                     }
 
