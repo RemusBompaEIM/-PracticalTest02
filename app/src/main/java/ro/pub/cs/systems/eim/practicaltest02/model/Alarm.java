@@ -5,11 +5,22 @@ public class Alarm {
     public Alarm(String hour, String minute) {
         this.hour = hour;
         this.minute = minute;
+        this.activated = false;
     }
 
 
     private String hour;
     private String minute;
+
+    public Boolean getActivated() {
+        return activated;
+    }
+
+    public void setActivated(Boolean activated) {
+        this.activated = activated;
+    }
+
+    private Boolean activated;
 
     public String getHour() {
         return hour;

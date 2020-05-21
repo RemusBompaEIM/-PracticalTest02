@@ -66,31 +66,40 @@ public class CommunicationThread extends Thread {
                 }
             }else if(request.equals("poll")){
                 if (data.containsKey(ip)) {
-                    Log.i(Constants.TAG, "[COMMUNICATION THREAD] Verify if alarm is active...");
-                    Socket new_socket = new Socket(Constants.WEB_SERVICE_ADDRESS, Constants.WEB_SERVICE_PORT);
-                    BufferedReader new_bufferedReader = Utilities.getReader(new_socket);
-                    String dayTimeProtocol = new_bufferedReader.readLine();
-                    dayTimeProtocol = new_bufferedReader.readLine();
-                    String [] formatted = dayTimeProtocol.split(" ");
-                    formatted = formatted[2].split(":");
-                    String hours = formatted[0];
-                    String minutes = formatted[1];
                     Alarm my_alarm = data.get(ip);
-                    Log.d(Constants.TAG, "[COMMUNICATION THREAD] The server returned: " + dayTimeProtocol);
-                    if(Integer.parseInt(my_alarm.getHour()) < Integer.parseInt(hours)){
+                    if(my_alarm.getActivated()){
                         printWriter.println("Active");
                         printWriter.flush();
-                    }else if(Integer.parseInt(my_alarm.getHour()) == Integer.parseInt(hours)){
-                        if(Integer.parseInt(my_alarm.getMinute()) <= Integer.parseInt(minutes)){
+                        my_alarm.setActivated(true);
+                    }else {
+                        Log.i(Constants.TAG, "[COMMUNICATION THREAD] Verify if alarm is active...");
+                        Socket new_socket = new Socket(Constants.WEB_SERVICE_ADDRESS, Constants.WEB_SERVICE_PORT);
+                        BufferedReader new_bufferedReader = Utilities.getReader(new_socket);
+                        String dayTimeProtocol = new_bufferedReader.readLine();
+                        dayTimeProtocol = new_bufferedReader.readLine();
+                        String[] formatted = dayTimeProtocol.split(" ");
+                        formatted = formatted[2].split(":");
+                        String hours = formatted[0];
+                        String minutes = formatted[1];
+
+                        Log.d(Constants.TAG, "[COMMUNICATION THREAD] The server returned: " + dayTimeProtocol);
+                        if (Integer.parseInt(my_alarm.getHour()) < Integer.parseInt(hours)) {
                             printWriter.println("Active");
                             printWriter.flush();
-                        }else{
+                            my_alarm.setActivated(true);
+                        } else if (Integer.parseInt(my_alarm.getHour()) == Integer.parseInt(hours)) {
+                            if (Integer.parseInt(my_alarm.getMinute()) <= Integer.parseInt(minutes)) {
+                                printWriter.println("Active");
+                                printWriter.flush();
+                                my_alarm.setActivated(true);
+                            } else {
+                                printWriter.println("Inactive");
+                                printWriter.flush();
+                            }
+                        } else {
                             printWriter.println("Inactive");
                             printWriter.flush();
                         }
-                    }else{
-                        printWriter.println("Inactive");
-                        printWriter.flush();
                     }
 
 
