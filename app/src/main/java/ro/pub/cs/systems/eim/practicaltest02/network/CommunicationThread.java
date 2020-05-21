@@ -70,10 +70,32 @@ public class CommunicationThread extends Thread {
                     Socket new_socket = new Socket(Constants.WEB_SERVICE_ADDRESS, Constants.WEB_SERVICE_PORT);
                     BufferedReader new_bufferedReader = Utilities.getReader(new_socket);
                     String dayTimeProtocol = new_bufferedReader.readLine();
+                    dayTimeProtocol = new_bufferedReader.readLine();
+                    String [] formatted = dayTimeProtocol.split(" ");
+                    formatted = formatted[2].split(":");
+                    String hours = formatted[0];
+                    String minutes = formatted[1];
+                    Alarm my_alarm = data.get(ip);
                     Log.d(Constants.TAG, "[COMMUNICATION THREAD] The server returned: " + dayTimeProtocol);
+                    if(Integer.parseInt(my_alarm.getHour()) < Integer.parseInt(hours)){
+                        printWriter.println("Inactive");
+                        printWriter.flush();
+                    }else if(Integer.parseInt(my_alarm.getHour()) == Integer.parseInt(hours)){
+                        if(Integer.parseInt(my_alarm.getMinute()) <= Integer.parseInt(minutes)){
+                            printWriter.println("Inactive");
+                            printWriter.flush();
+                        }else{
+                            printWriter.println("Active");
+                            printWriter.flush();
+                        }
+                    }else{
+                        printWriter.println("Active");
+                        printWriter.flush();
+                    }
+
 
                 }else{
-                    printWriter.println("No alarm for this ip");
+                    printWriter.println("None");
                     printWriter.flush();
                 }
             }
